@@ -29,7 +29,10 @@ class QueueSaveMailAttachmentsTask extends QueueTask
   {
     $this->out('Followed data set will be used to run this task:');
 		$this->out(var_export($this->defaults, true));
-    $this->QueuedJobs->createJob('SaveMailAttachments', ['name' => 'Save mail attachments', 'data' => $this->defaults]);
+    $class = get_class($this);
+    $class = substr($class, strrpos($class,'\\') + 1);
+    $class = substr($class, 5, -4);
+    $this->QueuedJobs->createJob($class, ['name' => 'Save mail attachments', 'data' => $this->defaults]);
   }
 
   public function run(array $data, $id)
@@ -46,7 +49,6 @@ class QueueSaveMailAttachmentsTask extends QueueTask
         $count++;
         $this->out('moving file: '.$key.' -> '.$file->name);
         $this->out('to: '.$this->dir->path.$file->name);
-        debug($file->info());
         if($file->copy($this->dir->path.$file->name))
         {
           $success++;
@@ -85,14 +87,14 @@ class QueueSaveMailAttachmentsTask extends QueueTask
     foreach($this->mailsIds as $mailsId)
     {
       $this->info('deleteMail: '.$mailsId);
-      //$this->mailbox->deleteMail($mailsId);
+      $this->mailbox->deleteMail($mailsId);
     }
   }
 
   protected function _destroy()
   {
     $this->tmpDir->delete();
-    //$this->mailbox->expungeDeletedMails();
+    $this->mailbox->expungeDeletedMails();
   }
 
   protected function _getMailAttachments($needle)
@@ -116,7 +118,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
       $this->out('found '.count($filePaths).' fils for "'.$needle.'":');
       foreach($filePaths as $file)
       {
-        debug($this->tmpDir->path.$file);
+
         $files[] = new File($this->tmpDir->path.$file);
       }
     }
