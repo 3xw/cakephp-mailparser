@@ -46,15 +46,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
         $count++;
         $this->out('moving file: '.$key.' -> '.$file->name);
         $this->out('to: '.$this->dir->path.$file->name);
-        $ok = false;
-        try {
-          $file->copy($this->dir->path.$file->name);
-          $ok = true;
-        } catch (Exception $e) {
-          debug($e);
-        }
-
-        if($ok)
+        if($file->copy($this->dir->path.$file->name))
         {
           $success++;
         }else{
