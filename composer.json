@@ -8,7 +8,7 @@
     "dereuromark/cakephp-queue": "^3.4",
     "php-imap/php-imap": "~2.0",
     "league/csv": "^8.2",
-    "phpoffice/phpexcel": "^1.8",
+    "phpoffice/phpexcel": "^1.8"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
