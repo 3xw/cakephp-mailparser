@@ -1,0 +1,27 @@
+{
+  "name": "3xw/cakephp-mailparser",
+  "description": "CakePHP mail parser",
+  "type": "cakephp-plugin",
+  "require": {
+    "php": ">=5.6",
+    "cakephp/cakephp": "^3.4",
+    "dereuromark/cakephp-queue": "^3.4",
+    "php-imap/php-imap": "~2.0",
+    "league/csv": "^8.2",
+    "phpoffice/phpexcel": "^1.8",
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Trois\\MailParser\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Trois\\MailParser\\Test\\": "tests",
+      "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+    }
+  }
+}
