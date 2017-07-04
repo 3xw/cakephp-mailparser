@@ -17,7 +17,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
     'mailbox' => '{imap.example.org:993/imap/ssl}INBOX',
     'mailObjectNeedles' => ['test','exemple'],
     'fileNeedles' => ['.*\.xlsx'],
-    'folder' => APP.'MailAttachments/'
+    'folder' => TMP.'MailAttachments/'
 	];
 
   protected $mailbox = null;
@@ -45,14 +45,20 @@ class QueueSaveMailAttachmentsTask extends QueueTask
       {
         $count++;
         $this->out('moving file: '.$key.' -> '.$file->name);
-        $results = $this->parser->save($file);
-        if(empty($results))
+        $this->out('to: '.$this->dir->path.$file->name);
+        $ok = false;
+        try {
+          $file->copy($this->dir->path.$file->name);
+          $ok = true;
+        } catch (Exception $e) {
+          debug($e);
+        }
+
+        if($ok)
         {
-          $this->err('Error parsing file -> No record saved');
-        }else{
-          $rows += count($results);
-          $this->info(count($results).' positions were successfully stored!');
           $success++;
+        }else{
+          $this->err('Error on copy file');
         }
       }
       $this->_clean();
@@ -62,7 +68,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
     $this->_destroy();
 
     // inform
-    $status = $success.' files were successfully saved on in folder '.$this->defaults['folder'];
+    $status = $success.' files were successfully saved on in folder '.$this->dir->path;
     $this->hr();
     $this->info("\n".$status."\n");
     $this->hr();
@@ -76,7 +82,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
   protected function _connect()
   {
     $subdir = new \DateTime();
-    $this->tmpDir = new Folder(TMP.'attachments/'.date('Y-d-m'), true, 0777);
+    $this->tmpDir = new Folder(TMP.'attachments/'.date('Y-m-d'), true, 0777);
     $this->dir = new Folder($this->defaults['folder'], true, 0777);
     $this->mailbox = new ImapMailbox($this->defaults['mailbox'], $this->defaults['username'], $this->defaults['password'], $this->tmpDir->path);
   }
@@ -86,14 +92,14 @@ class QueueSaveMailAttachmentsTask extends QueueTask
     foreach($this->mailsIds as $mailsId)
     {
       $this->info('deleteMail: '.$mailsId);
-      $this->mailbox->deleteMail($mailsId);
+      //$this->mailbox->deleteMail($mailsId);
     }
   }
 
   protected function _destroy()
   {
-    $this->dir->delete();
-    $this->mailbox->expungeDeletedMails();
+    //$this->tmpDir->delete();
+    //$this->mailbox->expungeDeletedMails();
   }
 
   protected function _getMailAttachments($needle)
