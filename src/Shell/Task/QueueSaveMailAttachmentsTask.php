@@ -46,6 +46,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
         $count++;
         $this->out('moving file: '.$key.' -> '.$file->name);
         $this->out('to: '.$this->dir->path.$file->name);
+        debug($file->info());
         if($file->copy($this->dir->path.$file->name))
         {
           $success++;
@@ -74,7 +75,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
   protected function _connect()
   {
     $subdir = new \DateTime();
-    $this->tmpDir = new Folder(TMP.'attachments/'.date('Y-m-d'), true, 0777);
+    $this->tmpDir = new Folder(TMP.'attachments/'.date('Y-m-d').'/', true, 0777);
     $this->dir = new Folder($this->defaults['folder'], true, 0777);
     $this->mailbox = new ImapMailbox($this->defaults['mailbox'], $this->defaults['username'], $this->defaults['password'], $this->tmpDir->path);
   }
@@ -90,7 +91,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
 
   protected function _destroy()
   {
-    //$this->tmpDir->delete();
+    $this->tmpDir->delete();
     //$this->mailbox->expungeDeletedMails();
   }
 
@@ -115,6 +116,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
       $this->out('found '.count($filePaths).' fils for "'.$needle.'":');
       foreach($filePaths as $file)
       {
+        debug($this->tmpDir->path.$file);
         $files[] = new File($this->tmpDir->path.$file);
       }
     }
