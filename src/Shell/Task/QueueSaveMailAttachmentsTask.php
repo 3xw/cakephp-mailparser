@@ -59,18 +59,22 @@ class QueueSaveMailAttachmentsTask extends QueueTask
       $this->_clean();
     }
 
+    // inform
+    $status = $success.' files were successfully saved on in folder '.$this->dir->path;
+    return $this->_finish($status, $id);
+  }
+
+  protected function _finish($status, $id)
+  {
     // delete stuff & close connection
     $this->_destroy();
 
-    // inform
-    $status = $success.' files were successfully saved on in folder '.$this->dir->path;
     $this->hr();
     $this->info("\n".$status."\n");
     $this->hr();
 
     // update status
     $this->QueuedJobs->updateAll(['status' => $status ], ['id' => $id]);
-
     return true;
   }
 
