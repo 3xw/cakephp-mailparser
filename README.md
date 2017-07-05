@@ -1,6 +1,6 @@
 # cakephp-parser plugin for CakePHP
 <p align="left">
-    <a href="LICENSE.txt" target="_blank">
+    <a href="LICENSE.md" target="_blank">
         <img alt="Software License" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square">
     </a>
 </p>
