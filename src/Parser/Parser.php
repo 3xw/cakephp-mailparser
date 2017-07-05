@@ -26,7 +26,13 @@ class Parser implements iParser
   {
     $model = $this->config('model');
     $models = $this->config('extraModels');
-    $models = ($models && is_array($models))? $models + [$model]: [$model];
+    if($models && is_array($models))
+    {
+      $models[] = $model;
+    }else
+    {
+      $models = [$model];
+    }
     foreach($models as $model)
     {
       $this->{$model} = TableRegistry::get($model);
