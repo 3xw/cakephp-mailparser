@@ -22,6 +22,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
 
   protected $mailbox = null;
   protected $mailsIds = [];
+  protected $mailcount = 0;
   protected $dir = null;
   protected $tmpDir = null;
 
@@ -110,6 +111,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
 
   protected function _getAllFiles()
   {
+    $this->mailcount += count($this->mailsIds);
     foreach($this->mailsIds as $mailsId)
     {
       $this->out('get mail: '.$mailsId);
