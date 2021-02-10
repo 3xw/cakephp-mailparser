@@ -94,6 +94,13 @@ class QueueSaveMailAttachmentsTask extends QueueTask
       $this->info('deleteMail: '.$mailsId);
       $this->mailbox->deleteMail($mailsId);
     }
+
+    foreach($this->defaults['fileNeedles'] as $needle )
+    {
+      $filePaths = $this->tmpDir->find($needle, true);
+      $this->out('found '.count($filePaths).' file for "'.$needle.'":');
+      foreach($filePaths as $file) (new File($this->tmpDir->path.$file))->delete();
+    }
   }
 
   protected function _destroy()
@@ -121,7 +128,7 @@ class QueueSaveMailAttachmentsTask extends QueueTask
     foreach($this->defaults['fileNeedles'] as $needle )
     {
       $filePaths = $this->tmpDir->find($needle, true);
-      $this->out('found '.count($filePaths).' fils for "'.$needle.'":');
+      $this->out('found '.count($filePaths).' file for "'.$needle.'":');
       foreach($filePaths as $file)
       {
 
